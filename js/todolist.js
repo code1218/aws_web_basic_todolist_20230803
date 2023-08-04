@@ -33,6 +33,11 @@ const checkedOnChangeHandle = (target) => {
     TodoListService.getInstance().setCompleStatus(target.value, target.checked);
 }
 
+const modifyTodoOnClickHandle = (target) => {
+    openModal();
+    modifyModal(TodoListService.getInstance().getTodoById(target.value));
+}
+
 const deleteTodoOnClickHandle = (target) => {
     TodoListService.getInstance().removeTodo(target.value);
 }
@@ -80,6 +85,13 @@ class TodoListService {
         localStorage.setItem("todoList", JSON.stringify(this.todoList));
     }
 
+    getTodoById(id) {
+        // console.log(this.todoList);
+        // console.log(this.todoList.filter(todo => todo.id === parseInt(id)));
+        // console.log(this.todoList.filter(todo => todo.id === parseInt(id))[0]);
+        return this.todoList.filter(todo => todo.id === parseInt(id))[0];
+    }
+
     addTodo(todoObj) {
         const todo = {
             ...todoObj,
@@ -90,7 +102,7 @@ class TodoListService {
 
         this.saveLocalStorage();
 
-        TodoListService.getInstance().updateTodoList();
+        this.updateTodoList();
 
         this.todoIndex++;
     }
@@ -103,6 +115,19 @@ class TodoListService {
         });
 
         this.saveLocalStorage();
+    }
+
+    setTodo(todoObj) {
+        for(let i = 0; i < this.todoList.length; i++) {
+            if(this.todoList[i].id === todoObj.id) {
+                this.todoList[i] = todoObj;
+                break;
+            }
+        }
+
+        this.saveLocalStorage();
+
+        this.updateTodoList();
     }
 
     removeTodo(id) {
